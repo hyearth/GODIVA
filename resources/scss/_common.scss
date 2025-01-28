@@ -1,0 +1,122 @@
+
+$image-path: '/resources/images/';
+$font-path: '/resources/fonts/';
+
+@use 'sass:math';
+
+@function vw($viewport, $px) {
+  @if $viewport == w {
+    $width: 1920;
+    $w: math.div(1, math.div($width, 1px)) * 100;
+    $max-width: 1920;
+    $vws : null;
+    $topx: $px * math.div($max-width, $width);
+    @each $v in $px {
+      @if type-of($v) == number {
+        $px: math.div($v, 1px);
+        $vw: $px * $w;
+        $vws: append($vws, if($vw == 0, 0, $vw + vw));
+      } @else {
+        $vws: append($vws, $v);
+      }
+    }
+    @return min(#{$vws}, #{$topx}px);
+
+  } @else if $viewport == t {
+    $width: 1023;
+    $w: math.div(1, math.div($width, 1px)) * 100;
+    $max-width: 1023;
+    $vws : null;
+    $topx: $px * math.div($max-width, $width);
+    @each $v in $px {
+      @if type-of($v) == number {
+        $px: math.div($v, 1px);
+        $vw: $px * $w;
+        $vws: append($vws, if($vw == 0, 0, $vw + vw));
+      } @else {
+        $vws: append($vws, $v);
+      }
+    }
+    @return min(#{$vws}, #{$topx}px);
+
+  } @else {
+    $width: 768;
+    $w: math.div(1, math.div($width, 1px)) * 100;
+    $vws: null;
+  
+    @each $v in $px {
+      @if type-of($v) == number {
+        $px: math.div($v, 1px);
+        $vw: $px * $w;
+        $vws: append($vws, if($vw == 0, 0, $vw + vw));
+      } @else {
+        $vws: append($vws, $v);
+      }
+    }
+  
+    @return $vws;
+  }
+}
+
+@mixin notWeb {
+  @content;
+}
+
+// size media query
+@mixin mobile {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+@mixin not-mobile {
+  @media (min-width: 769px) {
+    @content;
+  }
+}
+
+@mixin mobile-rotate {
+  @media (max-height: 450px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: 1023px) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
+  @media (min-width: 769px) and (max-width: 1023px) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @media (max-width: 1440px) {
+    @content;
+  }
+}
+
+@mixin laptop-only {
+  @media (min-width: 1024px) and (max-width: 1440px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: 1025px) {
+    @content;
+  }
+}
+
+@mixin hoverable {
+  @media (hover: hover) and (pointer: fine) {
+    @content;
+  }
+}
+
+html, body{ width: 100%; height: 100%; }
+.container{
+  width: 100%; height: 100%;
+}
