@@ -6,7 +6,8 @@ import './_common.js';
 import * as THREE from '/node_modules/three/build/three.module.js';
 // import * as THREE from './three.module.js';  // ✅
 import * as state from './_state';
-import gsap from 'gsap';
+// import gsap from 'gsap';
+import gsap from '/node_modules/gsap/index.js';
 import { GLTFLoader, DRACOLoader , RGBELoader ,OrbitControls } from 'three/examples/jsm/Addons.js';
 import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, HDR_PATH } from './_common';
 import { setPIP, setGuiModel, setGuiLight } from './_utils';
