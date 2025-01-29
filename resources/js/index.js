@@ -2,6 +2,7 @@ import '../scss/index.scss';
 
 import './_common.js';
 import * as THREE from 'three';
+// import * as THREE from "three/build/three.module.js";
 import * as state from './_state';
 import gsap from 'gsap';
 import { GLTFLoader, DRACOLoader , RGBELoader ,OrbitControls } from 'three/examples/jsm/Addons.js';
