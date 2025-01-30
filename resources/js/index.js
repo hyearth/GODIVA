@@ -1,9 +1,9 @@
 import '../scss/index.scss';
 import './_common.js';
-import * as THREE from 'three';
-// import * as THREE from '../node_modules/three/build/three.module.js';
+// import * as THREE from 'three';
+import * as THREE from '/node_modules/three/build/three.module.js';
 import * as state from './_state';
-import gsap from 'gsap';
+import gsap from 'gsap'; 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
