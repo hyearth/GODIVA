@@ -1,13 +1,17 @@
 import '../scss/index.scss';
 import './_common.js';
-// import * as THREE from 'three';
-import * as THREE from '/node_modules/three/build/three.module.js';
 import * as state from './_state';
-import gsap from 'gsap'; 
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, HDR_PATH } from './_common.js';
+import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, RESOURCES_PATH, HDR_PATH, PI, _CONTROL, PI2 } from './_common';
+
+
+// 외부 라이브러리
+import * as THREE from 'three';
+import gsap from 'gsap';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+// 유틸리티
 import { setPIP, setGuiModel, setGuiLight } from './_utils';
 
 (() => {
