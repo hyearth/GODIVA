@@ -74,7 +74,14 @@
 
 
     <footer id="footer"></footer>
-
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../3d-project/node_modules/three/build/three.module.js",
+                "../3d-project/node_modules/three/examples/jsm/controls/OrbitControls.js",
+            }
+        }
+    </script>
     <script type="module" src="./resources/js/index.js"></script>
 </body>
 </html>

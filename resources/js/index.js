@@ -1,5 +1,5 @@
+console.log('빌드 수정중')
 import '../scss/index.scss';
-
 import './_common.js';
 import * as THREE from 'three';
 // import * as THREE from './three.module.js';  
@@ -8,12 +8,12 @@ import gsap from 'gsap';
 // import gsap from '/node_modules/gsap';
 // import gsap from '/node';
 import { GLTFLoader, DRACOLoader , RGBELoader ,OrbitControls } from 'three/examples/jsm/Addons.js';
-import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, HDR_PATH } from './_common';
+import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, HDR_PATH } from './_common.js';
 import { setPIP, setGuiModel, setGuiLight } from './_utils';
 
 (() => {
 
-    console.log('빌드 수정중')
+
 
 
     const $godiva = document.querySelector('#godiva');
