@@ -6,7 +6,7 @@ import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded,
 
 // 외부 라이브러리
 import * as THREE from 'three';
-import gsap from 'gsap';
+// import gsap from 'gsap';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -28,10 +28,10 @@ import { setPIP, setGuiModel, setGuiLight } from './_utils';
     let contentHeight = $footer.offsetTop;
 
 
-    //timeline
-    const timeline = gsap.timeline({ paused: true });
-    const timelineTimeStamps = [0];
-    let totalDuration = 0;
+    // //timeline
+    // const timeline = gsap.timeline({ paused: true });
+    // const timelineTimeStamps = [0];
+    // let totalDuration = 0;
 
 
 
@@ -373,7 +373,7 @@ import { setPIP, setGuiModel, setGuiLight } from './_utils';
         requestToRender = true;
     }
     function onReady () {
-       createTimeline();
+    //    createTimeline();
         gsap.ticker.add(onTick);
     }
 
@@ -440,7 +440,7 @@ import { setPIP, setGuiModel, setGuiLight } from './_utils';
         contentHeight = $footer.offsetTop;
 	    $modelCon.style.height = `${contentHeight}px`
 
-        createTimeline();
+       // createTimeline();
         renderRequest();
         
     }
