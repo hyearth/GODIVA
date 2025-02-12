@@ -6,6 +6,8 @@ import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded,
 
 // 외부 라이브러리
 import * as THREE from 'three';
+
+
 import { Box3, Vector3 } from "three";
 import gsap from 'gsap';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
