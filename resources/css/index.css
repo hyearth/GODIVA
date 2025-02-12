@@ -244,6 +244,8 @@ header img {
   position: relative;
   width: 100%;
   min-height: 100vh;
+  border: 1px solid #f0f;
+  z-index: 100;
 }
 .container section .mesh-area {
   position: absolute;

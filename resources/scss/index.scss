@@ -111,7 +111,8 @@ header{
     }
     section{
         position: relative;width: 100%; min-height: 100vh;
-       // border:1px solid #f0f;
+        border:1px solid #f0f;
+        z-index: 100;
         .mesh-area{
             position: absolute;
             width:40vw;
@@ -145,6 +146,7 @@ header{
                 background: linear-gradient(90deg, #503a22, #5d3d29);
                -webkit-background-clip: text; 
                -webkit-text-fill-color: transparent; 
+               //text-shadow: 2px -4px 2px #46331e;
                @include tablet{
                 font-size: 11.5vw;
                }

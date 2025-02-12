@@ -17,6 +17,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 // 유틸리티
 import { setPIP, setGuiModel, setGuiLight } from './_utils';
+import { calcBasisFunctionDerivatives } from 'three/examples/jsm/curves/NURBSUtils.js';
 
 (() => {
 
@@ -98,14 +99,14 @@ import { setPIP, setGuiModel, setGuiLight } from './_utils';
 
     if (_DEBUG) {
         const camControl = _DEBUG.gui.addFolder('camera');
-        camControl.add(camera.position, 'x', -10, 10, 0.01).name('cam pos x');
-        camControl.add(camera.position, 'y', -10, 10, 0.01).name('cam pos y');
-        camControl.add(camera.position, 'z', -10, 10, 0.01).name('cam pos z');
-        camControl.add(camera.rotation, 'x', -10, 10, 0.01).name('cam rote x');
-        camControl.add(camera.rotation, 'y', -10, 10, 0.01).name('cam rote y');
-        camControl.add(camera.rotation, 'z', -10, 10, 0.01).name('cam rote z');
-        camControl.add(cameraRotateGroupX.rotation, 'y', -10, 10, 0.01).name('cam rota x');
-        camControl.add(cameraRotateGroupY.rotation, 'x', -10, 10, 0.01).name('cam rota y');
+        camControl.add(camera.position, 'x', -100, 100, 0.01).name('cam pos x');
+        camControl.add(camera.position, 'y', -100, 100, 0.01).name('cam pos y');
+        camControl.add(camera.position, 'z', -100, 100, 0.01).name('cam pos z');
+        camControl.add(camera.rotation, 'x', -100, 100, 0.01).name('cam rote x');
+        camControl.add(camera.rotation, 'y', -100, 100, 0.01).name('cam rote y');
+        camControl.add(camera.rotation, 'z', -100, 100, 0.01).name('cam rote z');
+        camControl.add(cameraRotateGroupX.rotation, 'y', -100, 100, 0.01).name('rota x');
+        camControl.add(cameraRotateGroupY.rotation, 'x', -100, 100, 0.01).name('am rota y');
     }
 
     // ---*Renderer 
@@ -143,7 +144,7 @@ import { setPIP, setGuiModel, setGuiLight } from './_utils';
     // directionalLight2.shadow.radius = 5; 
     // const pointLight = new THREE.PointLight(0xfffbef, 1, 100);
 
-    const pointLight = new THREE.PointLight(0xfffbef, 1, 200);
+    const pointLight = new THREE.PointLight(0xfffbef, 2, 200);
 
     scene.add(ambientLight,directionalLight,pointLight);
 
@@ -257,6 +258,9 @@ void main(){
     controls.addEventListener('change', () => {
       renderRequest();
     })
+    //
+  
+
 
     // ---model load
     const gltfLoader = new GLTFLoader();
@@ -312,6 +316,9 @@ void main(){
      };
  
      const textureLoader = new THREE.TextureLoader()
+     const metalBaseColor = textureLoader.load('/resources/images/textures_mesh05.jpg')
+     const dirtNormalMap = textureLoader.load('/resources/images/dirt_normal.jpg')
+     const stoneRoughMap = textureLoader.load('/resources/images/stone_rough.jpg')
     //모델 로드 
     function setModel(){
 
@@ -333,12 +340,11 @@ void main(){
             }
 
             model.traverse((child) => {
-                console.log(child)
+             console.log(child)
                // if(child.isMesh){
                      //그림자
                      child.castShadow = true;
                      child.receiveShadow = true; 
-                  //  console.log(child.name)
                      if(child.name === ("Lid")){
                         child.material = child.material.clone();//기존 material을 복제하여 형제들과 공유하지 않도록 
 
@@ -381,6 +387,35 @@ void main(){
                         }
 
                      }
+                     if(child.name === ('Lady_Half')){
+                        // saveInitModelPos(child,1)
+                        child.position.set(-2,480,45)
+                        child.rotation.set(1,9.7,4.5)
+
+                        // child.traverse((elem)=>{
+                            
+                        //     if(elem.isMesh){
+                        //         elem.material = elem.material.clone();///*
+                        //         elem.material.transparent = true;
+                        //         elem.material.opacity = 0;
+                        //     }
+                        // })
+
+                        if (_DEBUG) {
+                            const meshControls = _DEBUG.gui.addFolder('lady half');
+                            meshControls.add(child.position, 'x', -20, 20, 0.01).name('lady half pos x');
+                            meshControls.add(child.position, 'y', -500, 500, 0.01).name('lady half pos y');
+                            meshControls.add(child.position, 'z', -100, 100, 0.01).name('lady half pos z');
+                            meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('lady half rote x');
+                            meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('lady half rote y');
+                            meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('lady half rote z');
+                     
+                            // const materControls = meshControls.addFolder('Texture');
+                            // materControls.add(child.material, 'metalness',0, 1, 0.01).name('metal');
+                            // materControls.add(child.material, 'roughness', 0, 1, 0.01).name('rough');
+                        }
+
+                     }
                      if(child.name === ('Altruism')){
                         saveInitModelPos(child,2)
                         child.position.set(50,480,0)
@@ -393,7 +428,7 @@ void main(){
 
                        
                          child.material = new THREE.MeshStandardMaterial({
-                            map: textureBaseColor,
+                           // map: textureBaseColor,
                             normalMap: textureNormalMap,
                             roughnessMap: textureRoughMap,
                         });
@@ -401,9 +436,9 @@ void main(){
                         // child.material.roughness = 0.15; 
                       //  child.material.color.set(0xffc9c9); 
                         child.material.color.set(0xff3030); 
-                        child.material.map.repeat.x=0.8
-                        child.material.map.repeat.y=0.8
-                        child.material.map.offset.x=0.08
+                        // child.material.map.repeat.x=0.8
+                        // child.material.map.repeat.y=0.8
+                        // child.material.map.offset.x=0.08
 
                         if (_DEBUG) {
                             const meshControls = _DEBUG.gui.addFolder('mesh Altruism');
@@ -431,77 +466,191 @@ void main(){
                         }
 
                      }
+                     if(child.name === ('Altruism_Half')){
+
+                       // saveInitModelPos(child,2)
+                        child.position.set(125,330,-10)
+                        child.rotation.set(1.5,1.4,0)
+
+                       
+                        child.traverse((elem)=>{
+                            if(elem.isMesh){
+                                // elem.material = elem.material.clone();///*
+                                // elem.material.transparent = true;
+                                // elem.material.opacity = 0;
+
+                                if(elem.name === ('Altruism_Half_2')){
+                                    elem.material = new THREE.MeshStandardMaterial({
+                                        normalMap: dirtNormalMap,
+                                        roughnessMap: stoneRoughMap,
+                                    });
+                                    elem.material.color.set(0xff3030); 
+                                }
+                            }
+                           
+                        })
+                       
+                       
+
+                        if (_DEBUG) {
+                            const meshControls = _DEBUG.gui.addFolder('Altruism half');
+                            meshControls.add(child.position, 'x', -200, 200, 0.01).name('Altruism half pos x');
+                            meshControls.add(child.position, 'y', -500, 500, 0.01).name('Altruism half pos y');
+                            meshControls.add(child.position, 'z', -20, 20, 0.01).name('Altruism half pos z');
+                            meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Altruism half rote x');
+                            meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Altruism half rote y');
+                            meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Altruism half rote z');
+                        }
+
+                     }
                      if(child.name === ('Nobility')){
                         saveInitModelPos(child,3)
+                        child.scale.multiplyScalar(0.96);
                         child.position.set(-50,420,0)
-                        child.rotation.set(2.5,-1.5,0)
+                        child.rotation.set(0,1.5,0)
 
                         if (_DEBUG) {
                             const meshControls = _DEBUG.gui.addFolder('mesh Nobility');
-                            meshControls.add(child.position, 'x', -20, 20, 0.01).name('Nobility pos x');
-                            meshControls.add(child.position, 'y', -20, 20, 0.01).name('Nobility pos y');
-                            meshControls.add(child.position, 'z', -20, 20, 0.01).name('Nobility pos z');
-                            meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Nobility rote x');
-                            meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Nobility rote y');
-                            meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Nobility rote z');
+                            meshControls.add(child.position, 'x', -500, 500, 0.01).name('Nobility pos x');
+                            meshControls.add(child.position, 'y', -500, 500, 0.01).name('Nobility pos y');
+                            meshControls.add(child.position, 'z', -500, 500, 0.01).name('Nobility pos z');
+                            meshControls.add(child.rotation, 'x', -500, 500, 0.01).name('Nobility rote x');
+                            meshControls.add(child.rotation, 'y', -500, 500, 0.01).name('Nobility rote y');
+                            meshControls.add(child.rotation, 'z', -500, 500, 0.01).name('Nobility rote z');
+                        }
+
+                     }
+                     if(child.name === ('Nobility_Half')){
+                       // saveInitModelPos(child,3)
+                       child.scale.multiplyScalar(0.96);
+                        child.position.set(-40,240,-10)
+                        child.rotation.set(1.8,0.2,2)
+
+                        // child.traverse((elem)=>{
+                        //     if(elem.isMesh){
+                        //         elem.material = elem.material.clone();///*
+                        //         elem.material.transparent = true;
+                        //         elem.material.opacity = 0;
+                        //     }
+                        // })
+                        if (_DEBUG) {
+                            const meshControls = _DEBUG.gui.addFolder('Nobility half');
+                            meshControls.add(child.position, 'x', -500, 500, 0.01).name('Nobility half pos x');
+                            meshControls.add(child.position, 'y', -500, 500, 0.01).name('Nobility half pos y');
+                            meshControls.add(child.position, 'z', -500, 500, 0.01).name('Nobility half pos z');
+                            meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Nobility half rote x');
+                            meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Nobility half rote y');
+                            meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Nobility half rote z');
                         }
 
                      }
                      if(child.name === ('Brave')){
                         saveInitModelPos(child,4)
-                        child.position.set(-10,330,0)
+                        child.position.set(-100,300,0)
                         child.rotation.set(8,-0.6,2.8)
+
 
                         if (_DEBUG) {
                             const meshControls = _DEBUG.gui.addFolder('mesh Brave');
-                            meshControls.add(child.position, 'x', -20, 20, 0.01).name('Brave pos x');
-                            meshControls.add(child.position, 'y', -20, 20, 0.01).name('Brave pos y');
-                            meshControls.add(child.position, 'z', -20, 20, 0.01).name('Brave pos z');
-                            meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Brave rote x');
-                            meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Brave rote y');
-                            meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Brave rote z');
+                            meshControls.add(child.position, 'x', -500, 500, 0.01).name('Brave pos x');
+                            meshControls.add(child.position, 'y', -500, 500, 0.01).name('Brave pos y');
+                            meshControls.add(child.position, 'z', -500, 500, 0.01).name('Brave pos z');
+                            meshControls.add(child.rotation, 'x', -500, 500, 0.01).name('Brave rote x');
+                            meshControls.add(child.rotation, 'y', -500, 500, 0.01).name('Brave rote y');
+                            meshControls.add(child.rotation, 'z', -500, 500, 0.01).name('Brave rote z');
+                        }
+                        if(child.isMesh){
+                             //텍스쳐
+                            child.material = new THREE.MeshStandardMaterial({
+                                map: metalBaseColor,
+                                normalMap: dirtNormalMap,
+                                roughnessMap: stoneRoughMap,
+                            });
+                            child.material.color.set(0xfffeee); 
+                            child.material.map.offset.x=0.17
+                            child.material.map.offset.y=0.2
+                            child.material.roughness = 0.5; 
+                            // if (_DEBUG) {
+                            
+                            //     if (child.material.map) {
+                            //         const texture = child.material.map;
+                                    
+                            //         const textureFolder = meshControls.addFolder('Texture');
+                            //         textureFolder.add(texture.repeat, 'x', -5, 5, 0.1).name('repeat X');
+                            //         textureFolder.add(texture.repeat, 'y', -5, 5, 0.1).name('repeat Y');
+                            //         textureFolder.add(texture.offset, 'x', -1, 1, 0.01).name('offset X');
+                            //         textureFolder.add(texture.offset, 'y', -1, 1, 0.01).name('offset Y');
+                            //         textureFolder.add(texture, 'rotation', 0, Math.PI * 2, 0.01).name('rotation');
+                            //     }
+                                
+                            // }
+
+                            
+
                         }
 
-                     }
-                     if(child.name === ('Brave_Half')){
-                    //    saveInitModelPos(child,4)
-                        child.position.set(10,330,-10)
-                        child.rotation.set(0.2,0.5,0.2)
+                       
 
-                        child.material.transparent = true;
-                        child.material.opacity = 0;
+                     }
+                     if(child.name === ('Brave_Half001')){
+                        // saveInitModelPos(child,4)
+                        child.position.set(1.8,0,3.2)
+                        child.rotation.set(0,-0.5,1)
+
+                        // child.traverse( elem => {
+                        //     if(elem.isMesh){
+                        //         elem.material = elem.material.clone();///*
+                        //         elem.material.transparent = true;
+                        //         elem.material.opacity = 0;
+                        //     }
+                        // });
 
                         if (_DEBUG) {
-                            const meshControls = _DEBUG.gui.addFolder('mesh Brave half');
-                            meshControls.add(child.position, 'x', -20, 20, 0.01).name('Brave half pos x');
-                            meshControls.add(child.position, 'y', -20, 20, 0.01).name('Brave half pos y');
-                            meshControls.add(child.position, 'z', -20, 20, 0.01).name('Brave half pos z');
-                            meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Brave half rote x');
-                            meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Brave half rote y');
-                            meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Brave half rote z');
+                            const meshControls = _DEBUG.gui.addFolder('Brave half');
+                            meshControls.add(child.position, 'x', -10,10, 0.01).name('Brave half pos x');
+                            meshControls.add(child.position, 'y', -10,10, 0.01).name('Brave half pos y');
+                            meshControls.add(child.position, 'z', -10,10, 0.01).name('Brave half pos z');
+                            meshControls.add(child.rotation, 'x', -10,10, 0.01).name('Brave half rote x');
+                            meshControls.add(child.rotation, 'y', -10,10, 0.01).name('Brave half rote y');
+                            meshControls.add(child.rotation, 'z', -10,10, 0.01).name('Brave half rote z');
                         }
 
                      }
                      if(child.name === ('Generosity')){
                         saveInitModelPos(child,5)
-                        child.position.set(50,240,-10)
+                        child.position.set(100,240,0)
                         child.rotation.set(2,0.6,2.4)
 
                         if (_DEBUG) {
                             const meshControls = _DEBUG.gui.addFolder('mesh Generosity');
-                            meshControls.add(child.position, 'x', -20, 20, 0.01).name('Generosity pos x');
-                            meshControls.add(child.position, 'y', -20, 20, 0.01).name('Generosity pos y');
-                            meshControls.add(child.position, 'z', -20, 20, 0.01).name('Generosity pos z');
+                            meshControls.add(child.position, 'x', -500, 500, 0.01).name('Generosity pos x');
+                            meshControls.add(child.position, 'y', -500, 500, 0.01).name('Generosity pos y');
+                            meshControls.add(child.position, 'z', -500, 500, 0.01).name('Generosity pos z');
                             meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Generosity rote x');
                             meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Generosity rote y');
                             meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Generosity rote z');
                         }
 
                      }
+                     if(child.name === ('Generosity_Half')){
+                        child.position.set(100,235,-25)
+                        child.rotation.set(1,-0.1,4.5)
+
+                        if (_DEBUG) {
+                            const meshControls = _DEBUG.gui.addFolder('Generosity half');
+                            meshControls.add(child.position, 'x', -500, 500, 0.01).name('Generosity half pos x');
+                            meshControls.add(child.position, 'y', -500, 500, 0.01).name('Generosity half pos y');
+                            meshControls.add(child.position, 'z', -500, 500, 0.01).name('Generosity half pos z');
+                            meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Generosity half rote x');
+                            meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Generosity half rote y');
+                            meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Generosity half rote z');
+                        }
+
+                     }
                      if(child.name === ('Trust')){
                         saveInitModelPos(child,6)
-                        child.position.set(0,150,0)
-                        child.rotation.set(0.6,0,0.6)
+                        child.position.set(0,0,0)
+                        child.rotation.set(3,1.2,0)
 
                         if (_DEBUG) {
                             const meshControls = _DEBUG.gui.addFolder('mesh Trust');
@@ -511,6 +660,32 @@ void main(){
                             meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Trust rote x');
                             meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Trust rote y');
                             meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Trust rote z');
+                        }
+
+                     }
+                     if(child.name === ('Trsut_Half')){
+                        // saveInitModelPos(child,6)
+                        child.position.set(0,0,-10)
+                        child.rotation.set(-1.2,3.5,2.5)
+                       
+
+                        // child.traverse((elem)=>{
+                            
+                        //     if(elem.isMesh){
+                        //       //  elem.material = elem.material.clone();///*
+                        //         // elem.material.transparent = true;
+                        //         // elem.material.opacity = 0;
+                        //     }
+                        // })
+
+                        if (_DEBUG) {
+                            const meshControls = _DEBUG.gui.addFolder('Trust Half');
+                            meshControls.add(child.position, 'x', -20, 20, 0.01).name('Trust Half pos x');
+                            meshControls.add(child.position, 'y', -20, 20, 0.01).name('Trust Half pos y');
+                            meshControls.add(child.position, 'z', -20, 20, 0.01).name('Trust Half pos z');
+                            meshControls.add(child.rotation, 'x', -20, 20, 0.01).name('Trust Half rote x');
+                            meshControls.add(child.rotation, 'y', -20, 20, 0.01).name('Trust Half rote y');
+                            meshControls.add(child.rotation, 'z', -20, 20, 0.01).name('Trust Half rote z');
                         }
 
                      }
@@ -555,11 +730,11 @@ void main(){
         camera.updateProjectionMatrix();
     }
 
+    //위치 초기화
     function openModelPos(secNum){
         let duration = 1, ease = 'cubic.inOut';
         if(model){
             model.traverse((child) => {
-                if(child.isMesh){
                     if(child.name === ("Lid")){
                         timeline.to(child.position, { x:-160,y:140,z:0, duration, ease },`seq-${secNum}`);
                         timeline.to(child.rotation, { x:0,y:0,z:2.5, duration, ease },`seq-${secNum}`);
@@ -569,28 +744,72 @@ void main(){
                        timeline.to(child.position, { x:0,y:575,z:0, duration, ease },`seq-${secNum}`);
                         timeline.to(child.rotation, { x:2.8,y:-0.3,z:0.5, duration, ease },`seq-${secNum}`);
                      }
+                     if(child.name === ('Lady_Half')){
+                        timeline.to(child.position, { x:-2,y:480,z:45, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.rotation, { x:1,y:9.7,z:4.5, duration, ease },`seq-${secNum}`);
+                        // child.traverse((elem)=>{
+                        //     if(elem.isMesh){
+                        //         timeline.to(elem.material, {opacity:0 , duration:0, ease:"" },`seq-${secNum}`);
+                        //     }
+                        // })
+                     }
                      if(child.name === ('Altruism')){
                         timeline.to(child.position, { x:50,y:480,z:0, duration, ease },`seq-${secNum}`);
                         timeline.to(child.rotation, { x:2,y:-0.5,z:0.2, duration, ease },`seq-${secNum}`);
                      }
+                     if(child.name === ('Altruism_Half')){
+                        timeline.to(child.position, { x:125,y:330,z:-10, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.rotation, { x:1.5,y:1.4,z:0, duration, ease },`seq-${secNum}`);
+                        // child.traverse((elem)=>{
+                        //     if(elem.isMesh){
+                        //         timeline.to(elem.material, {opacity:0 , duration:0, ease:"" },`seq-${secNum}`);
+                        //     }
+                        // })
+                      }
                      if(child.name === ('Nobility')){
                         timeline.to(child.position, { x:-50,y:420,z:0, duration, ease },`seq-${secNum}`);
-                        timeline.to(child.rotation, { x:2.5,y:-1.5,z:0, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.rotation, { x:0,y:1.5,z:0, duration, ease },`seq-${secNum}`);
                      }
-                     if(child.name === ('Brave')){
-                        timeline.to(child.position, { x:-10,y:330,z:0, duration, ease },`seq-${secNum}`);
+                     if(child.name === ('Nobility_Half')){
+                        timeline.to(child.position, { x:-40,y:240,z:-10, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.rotation, { x:1.8,y:0,z:2.2, duration, ease },`seq-${secNum}`);
+                        // child.traverse((elem)=>{
+                        //     if(elem.isMesh){
+                        //         timeline.to(elem.material, {opacity:0 , duration:0, ease:"" },`seq-${secNum}`);
+                        //     }
+                        // })
+                     }
+                     if(child.name === ('Brave')){         
+                        timeline.to(child.position, { x:-100,y:300,z:0, duration, ease },`seq-${secNum}`);
                         timeline.to(child.rotation, { x:8,y:-0.6,z:2.8, duration, ease },`seq-${secNum}`);
                      }
+                     if(child.name === ('Brave_Half001')){
+                        timeline.to(child.position, { x:1.8,y:0,z:3.2, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.rotation, { x:0,y:-0.5,z:1, duration, ease },`seq-${secNum}`);
+                        // child.traverse((elem)=>{
+                        //     if(elem.isMesh){
+                        //         timeline.to(elem.material, {opacity:0 , duration:0, ease:"" },`seq-${secNum}`);
+                        //     }
+                        // })
+                      
+                     }
                      if(child.name === ('Generosity')){
-                        timeline.to(child.position, { x:50,y:240,z:-10, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.position, { x:100,y:240,z:0, duration, ease },`seq-${secNum}`);
                         timeline.to(child.rotation, { x:2,y:0.6,z:2.4, duration, ease },`seq-${secNum}`);
                      }
-                     if(child.name === ('Trust')){
-                        timeline.to(child.position, { x:0,y:150,z:0, duration, ease },`seq-${secNum}`);
-                        timeline.to(child.rotation, { x:0.6,y:0,z:0.6, duration, ease },`seq-${secNum}`);
+                     if(child.name === ('Generosity_Half')){
+                        timeline.to(child.position, { x:100,y:235,z:-25, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.rotation, { x:1,y:-0.1,z:4.5, duration, ease },`seq-${secNum}`);
                      }
                     
-                 }
+                     if(child.name === ('Trust')){
+                        timeline.to(child.position, { x:0,y:0,z:0, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.rotation, { x:3,y:1.2,z:0, duration, ease },`seq-${secNum}`);
+                     }
+                     if(child.name === ('Trsut_Half')){
+                        timeline.to(child.position, { x:0,y:0,z:-10, duration, ease },`seq-${secNum}`);
+                        timeline.to(child.rotation, { x:-1.2,y:3.5,z:2.5, duration, ease },`seq-${secNum}`);
+                     }
             })
         }
     }
@@ -598,70 +817,66 @@ void main(){
         let duration = 1, ease = 'cubic.inOut';
         if(model){
             model.traverse((child) => {
-                if(child.isMesh){
-                   
-                     if(child.name === ('Lady')){
-                        timeline.to(child.position, {
-                            x:initModelState.mesh1.position.x, 
-                            y:initModelState.mesh1.position.y,
-                            z:initModelState.mesh1.position.z, duration, ease },`seq-${secNum}`);
-                        timeline.to(child.rotation, {
-                                x:initModelState.mesh1.rotation.x, 
-                                y:initModelState.mesh1.rotation.y,
-                                z:initModelState.mesh1.rotation.z, duration, ease },`seq-${secNum}`);
-                       }
-                     if(child.name === ('Altruism')){
-                        timeline.to(child.position, {
-                            x:initModelState.mesh2.position.x, 
-                            y:initModelState.mesh2.position.y,
-                            z:initModelState.mesh2.position.z, duration, ease },`seq-${secNum}`);
-                        timeline.to(child.rotation, {
-                                x:initModelState.mesh2.rotation.x, 
-                                y:initModelState.mesh2.rotation.y,
-                                z:initModelState.mesh2.rotation.z, duration, ease },`seq-${secNum}`);
-                     }
-                     if(child.name === ('Nobility')){
-                        timeline.to(child.position, {
-                            x:initModelState.mesh3.position.x, 
-                            y:initModelState.mesh3.position.y,
-                            z:initModelState.mesh3.position.z, duration, ease },`seq-${secNum}`);
-                        timeline.to(child.rotation, {
-                                x:initModelState.mesh3.rotation.x, 
-                                y:initModelState.mesh3.rotation.y,
-                                z:initModelState.mesh3.rotation.z, duration, ease },`seq-${secNum}`);
-                     }
-                     if(child.name === ('Brave')){
-                        timeline.to(child.position, {
-                            x:initModelState.mesh4.position.x, 
-                            y:initModelState.mesh4.position.y,
-                            z:initModelState.mesh4.position.z, duration, ease },`seq-${secNum}`);
-                        timeline.to(child.rotation, {
-                                x:initModelState.mesh4.rotation.x, 
-                                y:initModelState.mesh4.rotation.y,
-                                z:initModelState.mesh4.rotation.z, duration, ease },`seq-${secNum}`);
-                     }
-                     if(child.name === ('Generosity')){
-                        timeline.to(child.position, {
-                            x:initModelState.mesh5.position.x, 
-                            y:initModelState.mesh5.position.y,
-                            z:initModelState.mesh5.position.z, duration, ease },`seq-${secNum}`);
-                        timeline.to(child.rotation, {
-                                x:initModelState.mesh5.rotation.x, 
-                                y:initModelState.mesh5.rotation.y,
-                                z:initModelState.mesh5.rotation.z, duration, ease },`seq-${secNum}`);
-                     }
-                     if(child.name === ('Trust')){
-                        timeline.to(child.position, {
-                            x:initModelState.mesh6.position.x, 
-                            y:initModelState.mesh6.position.y,
-                            z:initModelState.mesh6.position.z, duration, ease },`seq-${secNum}`);
-                        timeline.to(child.rotation, {
-                                x:initModelState.mesh6.rotation.x, 
-                                y:initModelState.mesh6.rotation.y,
-                                z:initModelState.mesh6.rotation.z, duration, ease },`seq-${secNum}`);
-                     }
-                    
-                 }
+                if(child.name === ('Lady')){
+                timeline.to(child.position, {
+                    x:initModelState.mesh1.position.x, 
+                    y:initModelState.mesh1.position.y,
+                    z:initModelState.mesh1.position.z, duration, ease },`seq-${secNum}`);
+                timeline.to(child.rotation, {
+                        x:initModelState.mesh1.rotation.x, 
+                        y:initModelState.mesh1.rotation.y,
+                        z:initModelState.mesh1.rotation.z, duration, ease },`seq-${secNum}`);
+                }
+                if(child.name === ('Altruism')){
+                timeline.to(child.position, {
+                    x:initModelState.mesh2.position.x, 
+                    y:initModelState.mesh2.position.y,
+                    z:initModelState.mesh2.position.z, duration, ease },`seq-${secNum}`);
+                timeline.to(child.rotation, {
+                        x:initModelState.mesh2.rotation.x, 
+                        y:initModelState.mesh2.rotation.y,
+                        z:initModelState.mesh2.rotation.z, duration, ease },`seq-${secNum}`);
+                }
+                if(child.name === ('Nobility')){
+                timeline.to(child.position, {
+                    x:initModelState.mesh3.position.x, 
+                    y:initModelState.mesh3.position.y,
+                    z:initModelState.mesh3.position.z, duration, ease },`seq-${secNum}`);
+                timeline.to(child.rotation, {
+                        x:initModelState.mesh3.rotation.x, 
+                        y:initModelState.mesh3.rotation.y,
+                        z:initModelState.mesh3.rotation.z, duration, ease },`seq-${secNum}`);
+                }
+                if(child.name === ('Brave')){
+                timeline.to(child.position, {
+                    x:initModelState.mesh4.position.x, 
+                    y:initModelState.mesh4.position.y,
+                    z:initModelState.mesh4.position.z, duration, ease },`seq-${secNum}`);
+                timeline.to(child.rotation, {
+                        x:initModelState.mesh4.rotation.x, 
+                        y:initModelState.mesh4.rotation.y,
+                        z:initModelState.mesh4.rotation.z, duration, ease },`seq-${secNum}`);
+                }
+                if(child.name === ('Generosity')){
+                timeline.to(child.position, {
+                    x:initModelState.mesh5.position.x, 
+                    y:initModelState.mesh5.position.y,
+                    z:initModelState.mesh5.position.z, duration, ease },`seq-${secNum}`);
+                timeline.to(child.rotation, {
+                        x:initModelState.mesh5.rotation.x, 
+                        y:initModelState.mesh5.rotation.y,
+                        z:initModelState.mesh5.rotation.z, duration, ease },`seq-${secNum}`);
+                }
+                if(child.name === ('Trust')){
+                timeline.to(child.position, {
+                    x:initModelState.mesh6.position.x, 
+                    y:initModelState.mesh6.position.y,
+                    z:initModelState.mesh6.position.z, duration, ease },`seq-${secNum}`);
+                timeline.to(child.rotation, {
+                        x:initModelState.mesh6.rotation.x, 
+                        y:initModelState.mesh6.rotation.y,
+                        z:initModelState.mesh6.rotation.z, duration, ease },`seq-${secNum}`);
+                }
             })
         }
     }
@@ -705,12 +920,18 @@ void main(){
         cameraDistance = 10.2;
         if(model){
             model.traverse((child) => {
-                if(child.isMesh){
-                     if(child.name === ("Lady")){
-                        timeline.to(child.rotation, {x:2.8, y:Math.PI * 1.9,z:0.3, duration, ease },'seq-1');
-
-                     }
-                 }
+                if(child.name === ("Lady")){
+                  timeline.to(child.rotation, {x:2.8, y:Math.PI * 1.9,z:0.3, duration, ease },'seq-1');
+                }
+                if(child.name === ("Lady_Half")){
+                    timeline.to(child.position, {x:-2, y:578,z:-50, duration, ease },'seq-1');
+                    timeline.to(child.rotation, {x:0.1, y:9.7,z:5.4, duration, ease },'seq-1');
+                    // child.traverse((elem)=>{
+                    //     if(elem.isMesh){
+                    //         timeline.to(elem.material, {opacity:1,duration:0.2, ease:""},'seq-1');
+                    //     }
+                    // })
+                }
             })
         }
         //*필수
@@ -722,24 +943,31 @@ void main(){
         timeline.to(cameraOffset, { ...getCameraOffset(areaInfo), duration, ease }, 'seq-1');
         timelineTimeStamps.push(timeline.totalDuration());
 
+        
          //mesh2 - 하트
          areaInfo = getAreaInfo($sections[2]);
          cameraDistance = 10;
          if(model){
             model.traverse((child) => {
-                if(child.isMesh){
-                     if(child.name === ("Altruism")){
-                        timeline.to(child.rotation, {x:1.5, y:-0.2,z:-Math.PI * 2.15, duration, ease },'seq-2');
-
-                     }
-                 }
+                if(child.name === ("Altruism")){
+                    timeline.to(child.rotation, {x:1.5, y:-0.2,z:-Math.PI * 2.15, duration, ease },'seq-2');
+                }
+                if(child.name === ("Altruism_Half")){
+                    timeline.to(child.position, { x:125,y:392,z:-10, duration, ease },`seq-2`);
+                    timeline.to(child.rotation, {x:1.5, y:0.7,z:5.8, duration, ease },'seq-2');
+                    // child.traverse((elem)=>{
+                    //     if(elem.isMesh){
+                    //         timeline.to(elem.material, {opacity:1,duration:0.2, ease:""},'seq-2');
+                    //     }
+                    // })
+                }
             })
         }
          //*필수
-         timeline.to(cameraRotateGroupX.rotation, {y:0.02 + mScrollX, duration, ease },'seq-2');
+         timeline.to(cameraRotateGroupX.rotation, {y:0.015 + mScrollX, duration, ease },'seq-2');
          timeline.to(cameraRotateGroupY.rotation, {x:0, duration, ease },'seq-2')
          timeline.to(camera.rotation, {x:0, duration, ease },'seq-2');
-         timeline.to(camera.position, {x:0.2, y:4.4+mScrollY,z:cameraDistance, duration, ease },'seq-2');
+         timeline.to(camera.position, {x:0.15, y:4.4+mScrollY,z:cameraDistance, duration, ease },'seq-2');
          timeline.to(camera, { fov: getCameraFov(areaInfo.height, cameraDistance), duration, ease, }, 'seq-2');
          timeline.to(cameraOffset, { ...getCameraOffset(areaInfo), duration, ease }, 'seq-2');
          timelineTimeStamps.push(timeline.totalDuration());
@@ -749,15 +977,22 @@ void main(){
          cameraDistance = 10;
          if(model){
             model.traverse((child) => {
-                if(child.isMesh){
-                     if(child.name === ("Nobility")){
-                       timeline.to(child.rotation, {x:2.5, y:0.2,z:-Math.PI * 2, duration, ease },'seq-3');
-                     }
-                 }
+                if(child.name === ("Nobility")){
+                    timeline.to(child.rotation, {x:2.5, y:0.2,z:0, duration, ease },'seq-3');
+                }
+                if(child.name === ("Nobility_Half")){
+                    timeline.to(child.position, {x:-40, y:420,z:-10, duration, ease },'seq-3');
+                    timeline.to(child.rotation, {x:1.5, y:-0.2,z:-0.5, duration, ease },'seq-3');
+                    // child.traverse((elem)=>{
+                    //     if(elem.isMesh){
+                    //         timeline.to(elem.material, {opacity:1,duration:0.2, ease:""},'seq-3');
+                    //     }
+                    // })
+                }
             })
         }
          //*필수
-         timeline.to(cameraRotateGroupX.rotation, {y:-0.01 - mScrollX, duration, ease },'seq-3');
+         timeline.to(cameraRotateGroupX.rotation, {y:-0.015 - mScrollX, duration, ease },'seq-3');
          timeline.to(cameraRotateGroupY.rotation, {x:0, duration, ease },'seq-3')
          timeline.to(camera.rotation, {x:0, duration, ease },'seq-3');
          timeline.to(camera.position, {x:-0.15, y:3.7+mScrollY,z:cameraDistance, duration, ease },'seq-3');
@@ -770,19 +1005,23 @@ void main(){
           cameraDistance = 10;
           if(model){
             model.traverse((child) => {
-                if(child.isMesh){
-                     if(child.name === ("Brave")){
-                       timeline.to(child.rotation, {x:1.5, y:0,z:Math.PI * .8, duration, ease },'seq-4');
-                     }
-                     if(child.name === ("Brave_Half")){
-                        timeline.to(child.material, {opacity:1, duration:0.5, ease:'' },'seq-4');
-                        timeline.to(child.rotation, {x:0.5, y:1.2,z:-0.5, duration, ease},'seq-4');
-                      }
-                 }
+                if(child.name === ("Brave")){
+                    timeline.to(child.position, {x:-10, y:330,z:0, duration, ease },'seq-4');
+                    timeline.to(child.rotation, {x:2.2, y:-0.6,z:Math.PI * .8, duration, ease },'seq-4');
+                }
+                if(child.name === ("Brave_Half001")){
+                    timeline.to(child.position, {x:0.4, y:0,z:2.45, duration, ease },'seq-4');
+                    timeline.to(child.rotation, {x:1.2, y:-0.2,z:0.2, duration, ease },'seq-4');
+                    // child.traverse((elem)=>{
+                    //     if(elem.isMesh){
+                    //         timeline.to(elem.material, {opacity:1,duration:0.2, ease:""},'seq-4');
+                    //     }
+                    // })
+                }
             })
         }
           //*필수
-         timeline.to(cameraRotateGroupX.rotation, {y:0, duration, ease },'seq-4');
+         timeline.to(cameraRotateGroupX.rotation, {y:0,  duration, ease },'seq-4');
          timeline.to(cameraRotateGroupY.rotation, {x:0, duration, ease },'seq-4')
          timeline.to(camera.rotation, {x:0, duration, ease },'seq-4');
           timeline.to(camera.position, {x:0, y:2.7+mScrollY,z:cameraDistance, duration, ease },'seq-4');
@@ -796,18 +1035,21 @@ void main(){
           cameraDistance = 10;
           if(model){
             model.traverse((child) => {
-                if(child.isMesh){
-                     if(child.name === ("Generosity")){
-                      timeline.to(child.rotation, {x:1.8, y:0,z:Math.PI * 1.95, duration, ease },'seq-5');
-                     }
+                if(child.name === ("Generosity")){
+                   timeline.to(child.position, {x:50, y:240,z:0, duration, ease },'seq-5');
+                   timeline.to(child.rotation, {x:1.8, y:0.1,z:Math.PI * 1.95, duration, ease },'seq-5');
+                }
+                if(child.name === ("Generosity_Half")){
+                    timeline.to(child.position, {x:25, y:235,z:-25, duration, ease },'seq-5');
+                    timeline.to(child.rotation, {x:1.8, y:-0.1,z:0.5, duration, ease },'seq-5');
                  }
             })
         }
           //*필수
-          timeline.to(cameraRotateGroupX.rotation, {y:0.01+ mScrollX, duration, ease },'seq-5');
+          timeline.to(cameraRotateGroupX.rotation, {y:0.015+ mScrollX, duration, ease },'seq-5');
           timeline.to(cameraRotateGroupY.rotation, {x:0, duration, ease },'seq-5')
           timeline.to(camera.rotation, {x:0, duration, ease },'seq-5');
-          timeline.to(camera.position, {x:0.1, y:1.9+mScrollY,z:cameraDistance, duration, ease },'seq-5');
+          timeline.to(camera.position, {x:0.15, y:1.9+mScrollY,z:cameraDistance, duration, ease },'seq-5');
           timeline.to(camera, { fov: getCameraFov(areaInfo.height, cameraDistance), duration, ease, }, 'seq-5');
           timeline.to(cameraOffset, { ...getCameraOffset(areaInfo), duration, ease }, 'seq-5')
           timelineTimeStamps.push(timeline.totalDuration());
@@ -817,11 +1059,15 @@ void main(){
            cameraDistance = 10;
            if(model){
                 model.traverse((child) => {
-                    if(child.isMesh){
-                        if(child.name === ("Trust")){
-                        timeline.to(child.rotation, {x:0.6, y:Math.PI * 2,z:0.2 ,duration, ease },'seq-6');
-                        }
+                    if(child.name === ("Trust")){
+                        timeline.to(child.position, { x:-4,y:150,z:0, duration, ease },`seq-6`);
+                        timeline.to(child.rotation, {x:2.2, y:0.4,z:Math.PI * 2 ,duration, ease },'seq-6');
                     }
+                    if(child.name == ("Trsut_Half")){
+                       timeline.to(child.position, {x:4, y:152,z:-10, duration, ease },'seq-6');
+                       timeline.to(child.rotation, {x:1.8, y:-0.1,z:0.5, duration, ease },'seq-6');
+                       
+                     }
                 })
             }
            //*필수
@@ -832,6 +1078,8 @@ void main(){
            timeline.to(camera, { fov: getCameraFov(areaInfo.height, cameraDistance), duration, ease, }, 'seq-6');
            timeline.to(cameraOffset, { ...getCameraOffset(areaInfo), duration, ease }, 'seq-6')
            timelineTimeStamps.push(timeline.totalDuration());
+
+
 
            //mesh7 - 박스
            areaInfo = getAreaInfo($sections[7]);
