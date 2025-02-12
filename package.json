@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://hyearth.github.io/GODIVA/",
   "scripts": {
     "dev": "vite",
     "build": "vite build --emptyOutDir --sourcemap --forc",
@@ -13,13 +14,15 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
+    "gh-pages": "^6.3.0",
     "sass-embedded": "^1.83.4",
-    "vite": "^6.0.5"
-  },
+    "vite": "^6.0.5"  },
   "dependencies": {
     "dat.gui": "^0.7.9",
     "gsap": "^3.12.7",
     "stats.js": "^0.17.0",
     "three": "^0.172.0"
   }
+  
+  
 }
