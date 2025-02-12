@@ -5,7 +5,8 @@ import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded,
 
 
 // 외부 라이브러리
-import * as THREE from 'three';
+// import * as THREE from 'three';
+import * as THREE from "/node_modules/three/build/three.module.js"
 
 
 import { Box3, Vector3 } from "three";
