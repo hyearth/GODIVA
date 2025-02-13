@@ -1,16 +1,18 @@
 {
+  "homepage": "https://hyearth.github.io/GODIVA/",
   "name": "3d-project",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://hyearth.github.io/GODIVA/",
   "scripts": {
     "dev": "vite",
     "build": "vite build --emptyOutDir --sourcemap --forc",
     "preview": "vite preview",
     "watch": "vite build --watch",
     "sync": "browser-sync --watch reload",
-    "sass": "sass -w src/static/style/scss/style.scss:src/static/style/style.css"
+    "sass": "sass -w src/static/style/scss/style.scss:src/static/style/style.css",
+    "predeploy":"npm run build",
+    "deploy":"gh-pages -d build"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

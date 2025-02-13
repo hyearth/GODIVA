@@ -1,7 +1,7 @@
-import '../scss/index.scss';
-import './_common.js';
-import * as state from './_state';
-import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, RESOURCES_PATH, HDR_PATH, PI, _CONTROL, PI2 } from './_common.js';
+import '/resources/scss/index.scss';
+import '/resources/js/_common.js';
+import * as state from '/resources/js/_state.js';
+import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, RESOURCES_PATH, HDR_PATH, PI, _CONTROL, PI2 } from '/resources/js/_common.js';
 
 
 // 외부 라이브러리
@@ -28,7 +28,7 @@ import { Box3, Vector3 } from "three";
 
 
 // 유틸리티
-import { setPIP, setGuiModel, setGuiLight } from './_utils';
+import { setPIP, setGuiModel, setGuiLight } from '/resources/js/_utils.js';
 // import { calcBasisFunctionDerivatives } from 'three/examples/jsm/curves/NURBSUtils.js';
 
 (() => {
