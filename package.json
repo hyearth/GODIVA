@@ -11,14 +11,14 @@
     "watch": "vite build --watch",
     "sync": "browser-sync --watch reload",
     "sass": "sass -w src/static/style/scss/style.scss:src/static/style/style.css",
-    "predeploy":"npm run build",
-    "deploy":"gh-pages -d build"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "gh-pages": "^6.3.0",
     "sass-embedded": "^1.83.4",
-    "vite": "^6.0.5"
+    "vite": "^6.1.0"
   },
   "dependencies": {
     "@types/three": "^0.173.0",
