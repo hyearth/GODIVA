@@ -6,15 +6,19 @@ import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded,
 
 // 외부 라이브러리
 // import * as THREE from 'three';
-import * as THREE from "/node_modules/three/build/three.module.js"
+import * as THREE from "https://unpkg.com//three@0.173.0/build/three.module.js"
+import { GLTFLoader } from "https://unpkg.com/three@0.173.0/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "https://unpkg.com/three@0.173.0/examples/jsm/controls/OrbitControls.js";
+import { DRACOLoader } from "https://unpkg.com/three@0.173.0/examples/jsm/loaders/DRACOLoader.js";
+import { RGBELoader } from "https://unpkg.com/three@0.173.0/examples/jsm/loaders/RGBELoader.js";
 
 
 import { Box3, Vector3 } from "three";
 import gsap from 'gsap';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 
 
@@ -268,7 +272,8 @@ void main(){
     // ---model load
     const gltfLoader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();//압축모델
-    dracoLoader.setDecoderPath('./resources/draco/');//디코딩 파일경로 
+   // dracoLoader.setDecoderPath('./resources/draco/');//디코딩 파일경로 
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/'); 
     gltfLoader.setDRACOLoader(dracoLoader);//모델 압축 
 
 
