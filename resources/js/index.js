@@ -1,7 +1,7 @@
 import '../scss/index.scss';
 import './_common.js';
 import * as state from './_state';
-import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, RESOURCES_PATH, HDR_PATH, PI, _CONTROL, PI2 } from './_common';
+import { $html, $body, areaWidth, areaHeight, _DEBUG, MODEL_PATH, onAssetLoaded, RESOURCES_PATH, HDR_PATH, PI, _CONTROL, PI2 } from './_common.js';
 
 
 // 외부 라이브러리

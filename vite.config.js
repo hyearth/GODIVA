@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import path, { resolve } from 'path';
 
 export default defineConfig({
-  base: '',
+  base: process.env.NODE_ENV === 'production' ? '/GODIVA/' : '/',
   optimizeDeps: {
     exclude: ['three'] // three를 최적화 대상에서 제외
   },
