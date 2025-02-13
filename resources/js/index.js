@@ -12,9 +12,14 @@ import { OrbitControls } from "https://unpkg.com/three@0.173.0/examples/jsm/cont
 import { DRACOLoader } from "https://unpkg.com/three@0.173.0/examples/jsm/loaders/DRACOLoader.js";
 import { RGBELoader } from "https://unpkg.com/three@0.173.0/examples/jsm/loaders/RGBELoader.js";
 
+// import { gsap } from "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js";
+// import "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js";
+
 
 import { Box3, Vector3 } from "three";
-import gsap from 'gsap';
+// import gsap from 'gsap';
+//import gsap from './node-modules/gsap/index.js';
+
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 // import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
