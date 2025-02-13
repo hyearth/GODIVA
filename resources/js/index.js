@@ -29,7 +29,7 @@ import { Box3, Vector3 } from "three";
 
 // 유틸리티
 import { setPIP, setGuiModel, setGuiLight } from './_utils';
-import { calcBasisFunctionDerivatives } from 'three/examples/jsm/curves/NURBSUtils.js';
+// import { calcBasisFunctionDerivatives } from 'three/examples/jsm/curves/NURBSUtils.js';
 
 (() => {
 
